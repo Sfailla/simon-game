@@ -12,10 +12,10 @@ window.onload = function() {
   var count = document.querySelector('#count');
 
   // Game Tile Buttons
-  var red = document.querySelector('#red');
-  var blue = document.querySelector('#blue');
-  var green = document.querySelector('#green');
   var yellow = document.querySelector('#yellow')
+  var green = document.querySelector('#green');
+  var blue = document.querySelector('#blue');
+  var red = document.querySelector('#red');
 
   // Game Audio Files
   var audio1 = document.querySelector('#audio1');
@@ -81,84 +81,54 @@ window.onload = function() {
     gameSequence();
   });
 
-  function gameSequence() {
-    x = setInterval(function() {
-      if (simon.sequence[j] == RED) {
-        console.log('its red');
-        audio1.play();
-        lit = 'redlit';
-        r_color.classList.add(lit);
-        setTimeout(function () {
-          r_color.classList.remove(lit)
-        },250);
-      }
-      if (simon.sequence[j] == BLUE) {
-        console.log('its blue');
-        lit = 'bluelit';
-        audio2.play();
-        b_color.classList.add(lit);
-        setTimeout(function () {
-          b_color.classList.remove(lit)
-        },250);
-      }
-      if (simon.sequence[j] == GREEN) {
-        console.log('its green');
-        lit = 'greenlit';
-        audio3.play();
-        g_color.classList.add(lit);
-        setTimeout(function () {
-          g_color.classList.remove(lit)
-        },250);
-      }
-      if (simon.sequence[j] == YELLOW) {
-        console.log('its yellow');
-        lit = 'yellowlit';
-        audio4.play();
-        y_color.classList.add(lit);
-        setTimeout(function () {
-          y_color.classList.remove(lit)
-        },250);
-      }
-      j++;
-      if (j >= simon.count) {
-        clearInterval(x);
-      }
-    },800);
-  }
+  function lightPlayChangeClass(className, audio, _color) {
+      lit = className;
+      audio.play();
+      _color.classList.add(lit);
+      setTimeout(function() {
+        _color.classList.remove(lit);
+      }, 250);
+    }
+
+    function gameSequence() {
+      x = setInterval(function() {
+        if (simon.sequence[j] == RED) {
+          lightPlayChangeClass('redlit', audio1, r_color);
+        }
+        if (simon.sequence[j] == BLUE) {
+          lightPlayChangeClass('bluelit', audio2, b_color);
+        }
+        if (simon.sequence[j] == GREEN) {
+          lightPlayChangeClass('greenlit', audio3, g_color);
+        }
+        if (simon.sequence[j] == YELLOW) {
+          lightPlayChangeClass('yellowlit', audio4, y_color);
+        }
+        j++;
+        if (j >= simon.count) {
+          clearInterval(x);
+        }
+      },800);
+    }
 
 
-  red.addEventListener('click', function() {
-    simon.sendColor(RED);
-    audio1.play();
-      r_color.classList.add('redlit');
-      window.setTimeout(function() {
-        r_color.classList.remove('redlit');
-      },250);
+    function clickSendPlayLight(tile, color, audio, _color, className) {
+      tile.addEventListener('click', function() {
+        simon.sendColor(color);
+        audio.play();
+        _color.classList.add(className);
+        window.setTimeout(function() {
+          _color.classList.remove(className);
+        }, 250);
+      });
+    }
 
-  });
-  blue.addEventListener('click', function() {
-    simon.sendColor(BLUE);
-    audio2.play();
-      b_color.classList.add('bluelit');
-      window.setTimeout(function() {
-        b_color.classList.remove('bluelit');
-      },250);
-  });
-  green.addEventListener('click', function() {
-    simon.sendColor(GREEN);
-    audio3.play();
-      g_color.classList.add('greenlit');
-      window.setTimeout(function() {
-        g_color.classList.remove('greenlit');
-      },250);
-  });
-  yellow.addEventListener('click', function() {
-    simon.sendColor(YELLOW);
-    audio4.play();
-      y_color.classList.add('yellowlit');
-      window.setTimeout(function() {
-        y_color.classList.remove('yellowlit');
-      },250);
-  });
+    clickSendPlayLight(yellow, YELLOW, audio4, y_color, 'yellowlit');
+    clickSendPlayLight(green, GREEN, audio3, g_color, 'greenlit');
+    clickSendPlayLight(blue, BLUE, audio2, b_color, 'bluelit');
+    clickSendPlayLight(red, RED, audio1, r_color, 'redlit');
+
+
+
 
 }
